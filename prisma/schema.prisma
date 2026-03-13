@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  completed Boolean  @default(false)
+}
+
+model Job {
+  id        String   @id @default(uuid())
+  clerkId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  position  String
+  company   String
+  location  String
+  status    String
+  mode      String
+}
+
+model Tour {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  city        String
+  country     String
+  title       String
+  description String   @db.Text
+  image       String?  @db.Text
+  stops       Json
+
+  @@unique([city, country])
+}
+
+model Token {
+  clerkId String @id
+  tokens  Int    @default(1000)
+}
