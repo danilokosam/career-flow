@@ -16,7 +16,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 /**
  * Providers Component
@@ -75,7 +75,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
       disableTransitionOnChange // Disable CSS transitions when theme changes (prevents flash)
     >
       {/* Toast notification system - shows success/error messages */}
-      <Toaster />
+      <Toaster richColors closeButton position="top-right" />
       {/* React Query provider - enables useQuery, useMutation hooks in all children */}
       <QueryClientProvider client={queryClient}>
         {children}
