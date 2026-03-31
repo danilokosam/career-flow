@@ -21,6 +21,7 @@ import { redirect } from "next/navigation";
 import { Prisma } from "../app/generated/prisma/client";
 import dayjs from "dayjs";
 import { revalidatePath } from "next/cache";
+import * as z from "zod";
 
 /**
  * Helper function to authenticate user and redirect if not authenticated
@@ -56,7 +57,7 @@ async function authenticateAndRedirect(): Promise<string> {
  */
 export async function createJobAction(
   values: CreateAndEditJobType,
-): Promise<JobType | null> {
+): Promise<JobType> {
   // Commented out: Example of adding artificial delay for testing loading states
   // await new Promise((resolve) => setTimeout(resolve, 3000));
 
@@ -79,9 +80,16 @@ export async function createJobAction(
     });
     return job;
   } catch (error) {
-    // Log error for debugging, return null to indicate failure
     console.error(error);
-    return null;
+
+    // If it's a Zod error
+    if (error instanceof z.ZodError) {
+      throw new Error("Invalid form data. Please check your inputs.");
+    }
+    // For any other errors (e.g., database errors), throw a generic error message
+    throw new Error(
+      "Failed to create job. Please try again or contact support if the issue persists.",
+    );
   }
 }
 
