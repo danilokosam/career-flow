@@ -212,7 +212,7 @@ export async function getAllJobsAction({
  * @param id - The ID of the job to delete
  * @returns The deleted job object, or null if deletion fails
  */
-export async function deleteJobAction(id: string): Promise<JobType | null> {
+export async function deleteJobAction(id: string): Promise<JobType> {
   const userId = await authenticateAndRedirect();
 
   try {
