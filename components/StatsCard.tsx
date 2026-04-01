@@ -11,7 +11,7 @@ type StatsCardsProps = {
   value: number;
 };
 
-export const StatsCards = ({ title, value }: StatsCardsProps) => {
+export const StatsCard = ({ title, value }: StatsCardsProps) => {
   return (
     <Card className="bg-muted">
       <CardHeader className="flex flex-row justify-between items-center">
