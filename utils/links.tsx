@@ -10,17 +10,17 @@ const links: NavLink[] = [
   {
     href: "/add-job",
     label: "add job",
-    icon: <Layers />,
+    icon: <Layers size={20} strokeWidth={2} />,
   },
   {
     href: "/jobs",
     label: "all jobs",
-    icon: <AppWindow />,
+    icon: <AppWindow size={20} strokeWidth={2} />,
   },
   {
     href: "/stats",
     label: "stats",
-    icon: <AreaChart />,
+    icon: <AreaChart size={20} strokeWidth={2} />,
   },
 ];
 
