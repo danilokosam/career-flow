@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import Providers from "@/app/providers"; 
+import Providers from "@/app/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -177,17 +177,17 @@ export default function RootLayout({
      * Makes auth() and other Clerk hooks available in all components.
      * Must be a Server Component (no 'use client' directive).
      */
-    <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
-      <html lang="en" suppressHydrationWarning>
-        {/* 
+    <html lang="en" suppressHydrationWarning>
+      {/* 
           suppressHydrationWarning: Prevents React hydration warnings
           This is needed when using theme providers that modify the <html> element
           (e.g., adding "dark" class). The warning occurs because server and client
           may have different initial HTML due to theme detection.
         */}
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
           {/* 
             Providers Component
             - ThemeProvider: Dark/light mode
@@ -195,8 +195,8 @@ export default function RootLayout({
             - Toaster: Toast notifications
           */}
           <Providers>{children}</Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
