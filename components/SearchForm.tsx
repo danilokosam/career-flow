@@ -76,6 +76,7 @@ export const SearchForm = () => {
 
   return (
     <form
+      key={`${search}-${jobStatus}`}
       className="bg-muted mb-16 p-8 grid sm:grid-cols-2 md:grid-cols-3  gap-4 rounded-lg"
       onSubmit={handleSubmit}
     >
@@ -99,7 +100,21 @@ export const SearchForm = () => {
           })}
         </SelectContent>
       </Select>
-      <Button type="submit">Search</Button>
+      <div className="flex gap-2">
+        <Button type="submit" className="flex-1">
+          Search
+        </Button>
+        <Button
+          type="button"
+          variant="destructive"
+          className="flex-1"
+          onClick={() => {
+            router.push(pathname);
+          }}
+        >
+          Clear
+        </Button>
+      </div>
     </form>
   );
 };
