@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -263,25 +264,29 @@ export default function SignUpForm() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 font-normal">Optional</Badge>
+              </div>
               <Input
                 id="firstName"
                 type="text"
                 placeholder="First Name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 font-normal">Optional</Badge>
+              </div>
               <Input
                 id="lastName"
                 type="text"
                 placeholder="Last Name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                required
               />
             </div>
           </div>
