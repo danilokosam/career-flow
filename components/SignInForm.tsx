@@ -33,7 +33,7 @@ interface SignInFormProps {
 
 export default function SignInForm({ isGuest = false }: SignInFormProps) {
   const clerk = useClerk();
-  const { fetchStatus, signIn, errors } = useSignIn();
+  const { fetchStatus, signIn } = useSignIn();
 
   const guestAccount = isGuest ? testAccounts["guest-user"] : null;
   const [selectedRole, setSelectedRole] = useState<string>(
@@ -99,7 +99,7 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
 
   if (!signIn) {
     return (
-      <div className="w-full max-w-md">
+      <div className="w-full">
         <div className="bg-muted p-8 rounded-lg">
           <div className="space-y-2 mb-6">
             <Skeleton className="h-8 w-48" />
@@ -126,21 +126,12 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
   }
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full">
       <div className="bg-muted p-8 rounded-lg">
         <div className="space-y-2 mb-6">
           <h1 className="text-2xl font-bold">Welcome back</h1>
           <p className="text-muted-foreground">Sign in to your account</p>
         </div>
-
-        {/* Implementation of Clerk's passive error object */}
-        {errors && (
-          <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md text-sm text-destructive">
-            {Array.isArray(errors)
-              ? errors[0]?.message
-              : "An error has occurred with the authentication service."}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
