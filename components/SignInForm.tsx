@@ -22,8 +22,8 @@ type OAuthStrategy = "oauth_google" | "oauth_github";
 const testAccounts = {
   "guest-user": {
     name: "Test User",
-    email: "test@user.com",
-    password: "12345678",
+    email: "cuvaripisse-5175@yopmail.com",
+    password: "CareerFlow.2026!test",
   },
 };
 
