@@ -6,14 +6,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background flex flex-col">
       {/* Header with logo */}
-      <header className="max-w-7xl w-full mx-auto px-4 sm:px-8 h-14 sm:h-16 lg:h-20 mb-4 ">
+      <header className="max-w-7xl w-full mx-auto px-4 sm:px-8 py-2">
         <Image
           src="/logo-career-flow.svg"
           alt="CareerFlow logo"
           width={90}
           height={40}
           priority
-          className="dark:invert shrink-0"
+          className="dark:invert shrink-0 h-28 w-auto"
           // style={{ border: "solid red 2px" }}
         />
       </header>
