@@ -31,10 +31,10 @@ export const JobsList = () => {
   // Extract search parameters from URL with default values
   // get() returns null if param doesn't exist, so we use || "" for empty string default
   const search = searchParams.get("search") || "";
-  const jobStatus = searchParams.get("jobStatus") || "";
+  const jobStatus = searchParams.get("jobStatus") || "all";
 
   // Parse page number from URL, default to page 1 if not provided or invalid
-  const pageNumber = Number(searchParams.get("pageNumber") || "1");
+  const pageNumber = Number(searchParams.get("page") || "1");
 
   /**
    * Tanstack Query hook for data fetching
@@ -53,6 +53,7 @@ export const JobsList = () => {
    * - Calls server action getAllJobsAction with current filters
    */
   const { data, isPending } = useQuery({
+    // It has the same query key structure as the one used in the server component for prefetching ( as in app/(dashboard)/jobs/page.tsx).
     queryKey: ["jobs", search, jobStatus, pageNumber],
     queryFn: () => getAllJobsAction({ search, jobStatus, page: pageNumber }),
   });
