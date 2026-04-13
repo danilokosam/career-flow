@@ -25,7 +25,7 @@ async function main() {
     const updatedAt = faker.date.between({ from: createdAt, to: now });
 
     return {
-      clerkId: "user_3CJK38ylm4NnuDz65yCOU9Fphvj",
+      clerkId: "user_3CJUVPbEZN9cpDvtrwJKt02GrvA",
       position: faker.person.jobTitle(),
       company: faker.company.name(),
       location: faker.location.city(),
