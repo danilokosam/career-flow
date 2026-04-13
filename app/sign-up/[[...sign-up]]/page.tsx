@@ -3,7 +3,7 @@ import SignUpForm from "@/components/SignUpForm";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 
-export default async function SignUpPage() {
+const SignUpPage = async () => {
   const { userId } = await auth();
   const redirectPath = userId ? "/jobs" : "/";
   return (
@@ -35,3 +35,5 @@ export default async function SignUpPage() {
     </main>
   );
 }
+
+export default SignUpPage
