@@ -15,12 +15,12 @@ function Sidebar() {
         {" "}
         {/* Logo container */}
         <Image
-          src="/logo.svg"
-          alt="jobify logo"
-          width={164}
-          height={50}
+          src="/logo-career-flow.svg"
+          alt="career flow logo"
+          width={90}
+          height={40}
           priority
-          className="dark:invert"
+          className="dark:invert shrink-0 h-28 w-auto"
         />
       </div>
       <div className="flex flex-col gap-y-2">
