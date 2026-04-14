@@ -49,91 +49,56 @@ export const ButtonContainer = ({
   };
 
   const renderPageButtons = () => {
-    const pageButtons: React.ReactNode[] = [];
-    const maxVisible = 3;
-
-    let startPage: number;
-    let endPage: number;
-
-    if (totalPages <= maxVisible + 2) {
-      // Few pages: show all, no ellipsis needed
-      startPage = 1;
-      endPage = totalPages;
-    } else if (currentPage <= maxVisible) {
-      startPage = 1;
-      endPage = maxVisible;
-    } else if (currentPage >= totalPages - maxVisible + 1) {
-      startPage = totalPages - maxVisible + 1;
-      endPage = totalPages;
-    } else {
-      startPage = currentPage - 1;
-      endPage = currentPage + 1;
+    // For 5 or fewer pages, show all (no shifting possible)
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1).map((page) =>
+        addPageButton({ page, activeClass: currentPage === page }),
+      );
     }
 
-    // If showing all pages, just render them
-    if (totalPages <= maxVisible + 2) {
-      for (let i = startPage; i <= endPage; i++) {
-        pageButtons.push(
-          addPageButton({ page: i, activeClass: currentPage === i }),
-        );
-      }
-      return pageButtons;
-    }
+    // Always exactly 5 slots: [1] [2|...] [mid] [n-1|...] [n]
+    const buttons: React.ReactNode[] = [];
 
-    // First page
-    pageButtons.push(
-      addPageButton({ page: 1, activeClass: currentPage === 1 }),
-    );
-
-    // Left ellipsis or second page
-    if (startPage > 2) {
-      pageButtons.push(
-        <Button size="icon" variant="outline" key="dots-1" disabled>
+    if (currentPage <= 3) {
+      // Near start: [1] [2] [3] [...] [last]
+      buttons.push(addPageButton({ page: 1, activeClass: currentPage === 1 }));
+      buttons.push(addPageButton({ page: 2, activeClass: currentPage === 2 }));
+      buttons.push(addPageButton({ page: 3, activeClass: currentPage === 3 }));
+      buttons.push(
+        <Button size="icon" variant="outline" key="dots-r" disabled>
           ...
         </Button>,
       );
-    } else {
-      pageButtons.push(
-        addPageButton({ page: 2, activeClass: currentPage === 2 }),
-      );
-    }
-
-    // Middle page
-    const middlePage = currentPage <= maxVisible
-      ? 3
-      : currentPage >= totalPages - maxVisible + 1
-        ? totalPages - 2
-        : currentPage;
-
-    pageButtons.push(
-      addPageButton({ page: middlePage, activeClass: currentPage === middlePage }),
-    );
-
-    // Right ellipsis or second-to-last page
-    if (endPage < totalPages - 1) {
-      pageButtons.push(
-        <Button size="icon" variant="outline" key="dots-2" disabled>
+      buttons.push(addPageButton({ page: totalPages, activeClass: false }));
+    } else if (currentPage >= totalPages - 2) {
+      // Near end: [1] [...] [n-2] [n-1] [n]
+      buttons.push(addPageButton({ page: 1, activeClass: false }));
+      buttons.push(
+        <Button size="icon" variant="outline" key="dots-l" disabled>
           ...
         </Button>,
       );
+      buttons.push(addPageButton({ page: totalPages - 2, activeClass: currentPage === totalPages - 2 }));
+      buttons.push(addPageButton({ page: totalPages - 1, activeClass: currentPage === totalPages - 1 }));
+      buttons.push(addPageButton({ page: totalPages, activeClass: currentPage === totalPages }));
     } else {
-      pageButtons.push(
-        addPageButton({
-          page: totalPages - 1,
-          activeClass: currentPage === totalPages - 1,
-        }),
+      // Middle: [1] [...] [current] [...] [last]
+      buttons.push(addPageButton({ page: 1, activeClass: false }));
+      buttons.push(
+        <Button size="icon" variant="outline" key="dots-l" disabled>
+          ...
+        </Button>,
       );
+      buttons.push(addPageButton({ page: currentPage, activeClass: true }));
+      buttons.push(
+        <Button size="icon" variant="outline" key="dots-r" disabled>
+          ...
+        </Button>,
+      );
+      buttons.push(addPageButton({ page: totalPages, activeClass: false }));
     }
 
-    // Last page
-    pageButtons.push(
-      addPageButton({
-        page: totalPages,
-        activeClass: currentPage === totalPages,
-      }),
-    );
-
-    return pageButtons;
+    return buttons;
   };
 
   return (
