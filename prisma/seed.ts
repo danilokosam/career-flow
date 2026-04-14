@@ -7,6 +7,14 @@ const adapter = new PrismaPg({
 });
 const prisma = new PrismaClient({ adapter });
 
+const TEST_USER_CLERK_ID = process.env.TEST_USER_CLERK_ID;
+
+if (!TEST_USER_CLERK_ID) {
+  throw new Error("TEST_USER_CLERK_ID env variable is required to run the seed.");
+}
+
+const clerkId: string = TEST_USER_CLERK_ID;
+
 const jobStatuses = ["pending", "interview", "declined"] as const;
 const jobModes = ["full-time", "part-time", "internship"] as const;
 
@@ -25,7 +33,7 @@ async function main() {
     const updatedAt = faker.date.between({ from: createdAt, to: now });
 
     return {
-      clerkId: "user_3CLKbL3qjerOH0IyovvEQTLUOoS",
+      clerkId,
       position: faker.person.jobTitle(),
       company: faker.company.name(),
       location: faker.location.city(),

@@ -108,10 +108,10 @@ export const ButtonContainer = ({
   };
 
   return (
-    <div className="flex justify-center gap-x-1 sm:gap-x-2">
+    <div className="flex h-10 flex-nowrap items-center justify-center gap-x-1 overflow-hidden sm:gap-x-2">
       {/* prev */}
       <Button
-        className="flex items-center gap-x-1 sm:gap-x-2"
+        className="shrink-0 gap-x-1 sm:gap-x-2"
         size="sm"
         variant="outline"
         onClick={() => {
@@ -126,7 +126,7 @@ export const ButtonContainer = ({
       {renderPageButtons()}
       {/* next */}
       <Button
-        className="flex items-center gap-x-1 sm:gap-x-2"
+        className="shrink-0 gap-x-1 sm:gap-x-2"
         size="sm"
         onClick={() => {
           let nextPage = currentPage + 1;
