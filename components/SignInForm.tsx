@@ -67,7 +67,7 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
     clerk.client.signIn.authenticateWithRedirect({
       strategy,
       redirectUrl: "/sign-in/sso-callback",
-      redirectUrlComplete: "/add-job",
+      redirectUrlComplete: "/jobs",
     });
   };
 
@@ -90,9 +90,8 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
 
       if (signIn.status === "complete") {
         await signIn.finalize({
-          navigate: ({ session, decorateUrl }) => {
-            if (session?.currentTask) return;
-            const url = decorateUrl("/add-job");
+          navigate: ({ decorateUrl }) => {
+            const url = decorateUrl("/jobs");
             if (url.startsWith("http")) {
               window.location.href = url;
             } else {
@@ -137,9 +136,8 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
 
       if (signIn.status === "complete") {
         await signIn.finalize({
-          navigate: ({ session, decorateUrl }) => {
-            if (session?.currentTask) return;
-            const url = decorateUrl("/add-job");
+          navigate: ({ decorateUrl }) => {
+            const url = decorateUrl("/jobs");
             if (url.startsWith("http")) {
               window.location.href = url;
             } else {

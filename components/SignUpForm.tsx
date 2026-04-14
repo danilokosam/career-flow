@@ -30,7 +30,7 @@ export default function SignUpForm() {
     clerk.client.signUp.authenticateWithRedirect({
       strategy,
       redirectUrl: "/sign-in/sso-callback",
-      redirectUrlComplete: "/add-job",
+      redirectUrlComplete: "/jobs",
     });
   };
 
@@ -93,7 +93,7 @@ export default function SignUpForm() {
 
       if (signUp.status === "complete") {
         await signUp.finalize();
-        window.location.href = "/add-job";
+        window.location.href = "/jobs";
       } else {
         toast.error("Verification could not be completed. Please try again.");
         setIsLoading(false);

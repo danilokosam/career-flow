@@ -59,7 +59,7 @@ export const SignUpWrapper = () => {
   return (
     <SignUp
       signInUrl="/sign-in"
-      fallbackRedirectUrl="/add-job"
+      fallbackRedirectUrl="/jobs"
       appearance={{
         elements: {
           rootBox: "mx-auto",
