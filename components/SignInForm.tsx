@@ -1,6 +1,7 @@
 "use client";
 
 import { useSignIn, useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -34,6 +35,7 @@ interface SignInFormProps {
 export default function SignInForm({ isGuest = false }: SignInFormProps) {
   const clerk = useClerk();
   const { fetchStatus, signIn } = useSignIn();
+  const router = useRouter();
 
   const guestAccount = isGuest ? testAccounts["guest-user"] : null;
   const [selectedRole, setSelectedRole] = useState<string>(
@@ -42,6 +44,8 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
   const [email, setEmail] = useState(guestAccount?.email ?? "");
   const [password, setPassword] = useState(guestAccount?.password ?? "");
   const [isLoading, setIsLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [code, setCode] = useState("");
 
   const handleRoleSelect = (value: string) => {
     if (value === "clear") {
@@ -74,7 +78,7 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
     setIsLoading(true);
     try {
       const { error } = await signIn.password({
-        identifier: email,
+        emailAddress: email,
         password,
       });
 
@@ -84,14 +88,73 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
         return;
       }
 
-      // If there is no error, set the active session and redirect
-      await clerk.setActive({ session: signIn.createdSessionId });
-      window.location.href = "/add-job";
+      if (signIn.status === "complete") {
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) return;
+            const url = decorateUrl("/add-job");
+            if (url.startsWith("http")) {
+              window.location.href = url;
+            } else {
+              router.push(url);
+            }
+          },
+        });
+      } else if (
+        signIn.status === "needs_second_factor" ||
+        signIn.status === "needs_client_trust"
+      ) {
+        const emailCodeFactor = signIn.supportedSecondFactors.find(
+          (factor) => factor.strategy === "email_code",
+        );
+        if (emailCodeFactor) {
+          await signIn.mfa.sendEmailCode();
+        }
+        setVerifying(true);
+        setIsLoading(false);
+      } else {
+        console.error("Sign-in attempt not complete:", signIn.status);
+        toast.error("Additional verification may be required.");
+        setIsLoading(false);
+      }
     } catch (err) {
       if (err instanceof Error) {
         toast.error(
           err.message || "An unexpected error occurred during sign-in.",
         );
+      }
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerify: React.ComponentProps<"form">["onSubmit"] = async (e) => {
+    e.preventDefault();
+    if (!signIn) return;
+
+    setIsLoading(true);
+    try {
+      await signIn.mfa.verifyEmailCode({ code });
+
+      if (signIn.status === "complete") {
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) return;
+            const url = decorateUrl("/add-job");
+            if (url.startsWith("http")) {
+              window.location.href = url;
+            } else {
+              router.push(url);
+            }
+          },
+        });
+      } else {
+        console.error("Sign-in attempt not complete:", signIn.status);
+        toast.error("Verification failed. Please try again.");
+        setIsLoading(false);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message || "Invalid verification code.");
       }
       setIsLoading(false);
     }
@@ -120,6 +183,72 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
             </div>
             <Skeleton className="h-10 w-full rounded-md" />
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (verifying) {
+    return (
+      <div className="w-full">
+        <div className="bg-muted p-8 rounded-lg">
+          <div className="space-y-2 mb-6">
+            <h1 className="text-2xl font-bold">Verify your account</h1>
+            <p className="text-muted-foreground">
+              Enter the verification code sent to your email
+            </p>
+          </div>
+
+          <form onSubmit={handleVerify} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="code">Verification Code</Label>
+              <Input
+                id="code"
+                type="text"
+                placeholder="Enter code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || fetchStatus === "fetching"}
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Verifying...
+                </span>
+              ) : (
+                "Verify"
+              )}
+            </Button>
+          </form>
+
+          <Button
+            type="button"
+            variant="link"
+            className="w-full mt-2"
+            onClick={() => signIn.mfa.sendEmailCode()}
+          >
+            Resend code
+          </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full mt-1"
+            onClick={() => {
+              setVerifying(false);
+              setCode("");
+              signIn.reset();
+            }}
+          >
+            Start over
+          </Button>
         </div>
       </div>
     );
