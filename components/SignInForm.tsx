@@ -84,8 +84,8 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
         return;
       }
 
-      // If there is no error, the flow was successful
-      await signIn.finalize();
+      // If there is no error, set the active session and redirect
+      await clerk.setActive({ session: signIn.createdSessionId });
       window.location.href = "/add-job";
     } catch (err) {
       if (err instanceof Error) {
