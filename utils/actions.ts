@@ -18,7 +18,7 @@ import prisma from "./db";
 import { auth } from "@clerk/nextjs/server";
 import { JobType, CreateAndEditJobType, createAndEditJobSchema } from "./types";
 import { redirect } from "next/navigation";
-import { Prisma } from "../app/generated/prisma/client";
+import { Prisma } from "../generated/prisma/client";
 import dayjs from "dayjs";
 import { revalidatePath } from "next/cache";
 import * as z from "zod";
