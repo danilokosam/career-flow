@@ -69,7 +69,7 @@ export default function SignInForm({ isGuest = false, redirectUrl }: SignInFormP
     if (!clerk.client.signIn) return;
     clerk.client.signIn.authenticateWithRedirect({
       strategy,
-      redirectUrl: "/sign-in/sso-callback",
+      redirectUrl: `/sign-in/sso-callback?redirect_url=${encodeURIComponent(postAuthUrl)}`,
       redirectUrlComplete: postAuthUrl,
     });
   };

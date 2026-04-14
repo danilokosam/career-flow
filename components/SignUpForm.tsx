@@ -35,7 +35,7 @@ export default function SignUpForm({ redirectUrl }: SignUpFormProps) {
     if (!clerk.client.signUp) return;
     clerk.client.signUp.authenticateWithRedirect({
       strategy,
-      redirectUrl: "/sign-in/sso-callback",
+      redirectUrl: `/sign-in/sso-callback?redirect_url=${encodeURIComponent(postAuthUrl)}`,
       redirectUrlComplete: postAuthUrl,
     });
   };
