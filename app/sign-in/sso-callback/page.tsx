@@ -2,8 +2,9 @@
 
 import { AuthenticateWithRedirectCallback } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-const SSOCallbackPage = () => {
+function SSOCallbackContent() {
   const searchParams = useSearchParams();
   const fallbackUrl = searchParams.get("redirect_url") || "/jobs";
 
@@ -15,6 +16,14 @@ const SSOCallbackPage = () => {
       />
       <div id="clerk-captcha" />
     </>
+  );
+}
+
+const SSOCallbackPage = () => {
+  return (
+    <Suspense>
+      <SSOCallbackContent />
+    </Suspense>
   );
 };
 
