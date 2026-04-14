@@ -3,7 +3,10 @@ import { AuthenticateWithRedirectCallback } from "@clerk/nextjs";
 const SSOCallbackPage = () => {
   return (
     <>
-      <AuthenticateWithRedirectCallback />
+      <AuthenticateWithRedirectCallback
+        signInFallbackRedirectUrl="/jobs"
+        signUpFallbackRedirectUrl="/jobs"
+      />
       <div id="clerk-captcha" />
     </>
   );
