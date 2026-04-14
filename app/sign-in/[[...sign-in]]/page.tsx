@@ -3,13 +3,13 @@ import SignInForm from "@/components/SignInForm";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 interface SignInPageProps {
-  searchParams: Promise<{ guest?: string }>;
+  searchParams: Promise<{ guest?: string; redirect_url?: string }>;
 }
 
 const SignInPage = async ({ searchParams }: SignInPageProps) => {
   const { userId } = await auth();
   const redirectPath = userId ? "/jobs" : "/";
-  const { guest } = await searchParams;
+  const { guest, redirect_url } = await searchParams;
   const isGuest = guest === "true";
 
   return (
@@ -35,7 +35,7 @@ const SignInPage = async ({ searchParams }: SignInPageProps) => {
           height={400}
         />
         <div className="w-full max-w-lg ml-auto">
-          <SignInForm isGuest={isGuest} />
+          <SignInForm isGuest={isGuest} redirectUrl={redirect_url} />
         </div>
       </section>
     </main>

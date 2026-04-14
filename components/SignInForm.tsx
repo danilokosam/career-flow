@@ -30,12 +30,15 @@ const testAccounts = {
 
 interface SignInFormProps {
   isGuest?: boolean;
+  redirectUrl?: string;
 }
 
-export default function SignInForm({ isGuest = false }: SignInFormProps) {
+export default function SignInForm({ isGuest = false, redirectUrl }: SignInFormProps) {
   const clerk = useClerk();
   const { fetchStatus, signIn } = useSignIn();
   const router = useRouter();
+
+  const postAuthUrl = redirectUrl || "/jobs";
 
   const guestAccount = isGuest ? testAccounts["guest-user"] : null;
   const [selectedRole, setSelectedRole] = useState<string>(
@@ -67,7 +70,7 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
     clerk.client.signIn.authenticateWithRedirect({
       strategy,
       redirectUrl: "/sign-in/sso-callback",
-      redirectUrlComplete: "/jobs",
+      redirectUrlComplete: postAuthUrl,
     });
   };
 
@@ -91,7 +94,7 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
       if (signIn.status === "complete") {
         await signIn.finalize({
           navigate: ({ decorateUrl }) => {
-            const url = decorateUrl("/jobs");
+            const url = decorateUrl(postAuthUrl);
             if (url.startsWith("http")) {
               window.location.href = url;
             } else {
@@ -137,7 +140,7 @@ export default function SignInForm({ isGuest = false }: SignInFormProps) {
       if (signIn.status === "complete") {
         await signIn.finalize({
           navigate: ({ decorateUrl }) => {
-            const url = decorateUrl("/jobs");
+            const url = decorateUrl(postAuthUrl);
             if (url.startsWith("http")) {
               window.location.href = url;
             } else {

@@ -13,9 +13,15 @@ import { Loader2 } from "lucide-react";
 
 type OAuthStrategy = "oauth_google" | "oauth_github";
 
-export default function SignUpForm() {
+interface SignUpFormProps {
+  redirectUrl?: string;
+}
+
+export default function SignUpForm({ redirectUrl }: SignUpFormProps) {
   const clerk = useClerk();
   const { fetchStatus, signUp } = useSignUp();
+
+  const postAuthUrl = redirectUrl || "/jobs";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -30,7 +36,7 @@ export default function SignUpForm() {
     clerk.client.signUp.authenticateWithRedirect({
       strategy,
       redirectUrl: "/sign-in/sso-callback",
-      redirectUrlComplete: "/jobs",
+      redirectUrlComplete: postAuthUrl,
     });
   };
 
@@ -93,7 +99,7 @@ export default function SignUpForm() {
 
       if (signUp.status === "complete") {
         await signUp.finalize();
-        window.location.href = "/jobs";
+        window.location.href = postAuthUrl;
       } else {
         toast.error("Verification could not be completed. Please try again.");
         setIsLoading(false);

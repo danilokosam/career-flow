@@ -3,9 +3,14 @@ import SignUpForm from "@/components/SignUpForm";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 
-const SignUpPage = async () => {
+const SignUpPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect_url?: string }>;
+}) => {
   const { userId } = await auth();
   const redirectPath = userId ? "/jobs" : "/";
+  const { redirect_url } = await searchParams;
   return (
     <main>
       <header className="max-w-7xl mx-auto px-4 sm:px-8 py-2">
@@ -29,7 +34,7 @@ const SignUpPage = async () => {
           height={400}
         />
         <div className="w-full max-w-lg ml-auto">
-          <SignUpForm />
+          <SignUpForm redirectUrl={redirect_url} />
         </div>
       </section>
     </main>
