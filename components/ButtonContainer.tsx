@@ -55,13 +55,14 @@ export const ButtonContainer = ({
     let startPage: number;
     let endPage: number;
 
-    if (totalPages <= maxVisible) {
+    if (totalPages <= maxVisible + 2) {
+      // Few pages: show all, no ellipsis needed
       startPage = 1;
       endPage = totalPages;
-    } else if (currentPage <= 2) {
+    } else if (currentPage <= maxVisible) {
       startPage = 1;
       endPage = maxVisible;
-    } else if (currentPage >= totalPages - 1) {
+    } else if (currentPage >= totalPages - maxVisible + 1) {
       startPage = totalPages - maxVisible + 1;
       endPage = totalPages;
     } else {
@@ -69,40 +70,68 @@ export const ButtonContainer = ({
       endPage = currentPage + 1;
     }
 
-    if (startPage > 1) {
-      pageButtons.push(
-        addPageButton({ page: 1, activeClass: currentPage === 1 }),
-      );
-      if (startPage > 2) {
+    // If showing all pages, just render them
+    if (totalPages <= maxVisible + 2) {
+      for (let i = startPage; i <= endPage; i++) {
         pageButtons.push(
-          <Button size="icon" variant="outline" key="dots-1" disabled>
-            ...
-          </Button>,
+          addPageButton({ page: i, activeClass: currentPage === i }),
         );
       }
+      return pageButtons;
     }
 
-    for (let i = startPage; i <= endPage; i++) {
+    // First page
+    pageButtons.push(
+      addPageButton({ page: 1, activeClass: currentPage === 1 }),
+    );
+
+    // Left ellipsis or second page
+    if (startPage > 2) {
       pageButtons.push(
-        addPageButton({ page: i, activeClass: currentPage === i }),
+        <Button size="icon" variant="outline" key="dots-1" disabled>
+          ...
+        </Button>,
+      );
+    } else {
+      pageButtons.push(
+        addPageButton({ page: 2, activeClass: currentPage === 2 }),
       );
     }
 
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        pageButtons.push(
-          <Button size="icon" variant="outline" key="dots-2" disabled>
-            ...
-          </Button>,
-        );
-      }
+    // Middle page
+    const middlePage = currentPage <= maxVisible
+      ? 3
+      : currentPage >= totalPages - maxVisible + 1
+        ? totalPages - 2
+        : currentPage;
+
+    pageButtons.push(
+      addPageButton({ page: middlePage, activeClass: currentPage === middlePage }),
+    );
+
+    // Right ellipsis or second-to-last page
+    if (endPage < totalPages - 1) {
+      pageButtons.push(
+        <Button size="icon" variant="outline" key="dots-2" disabled>
+          ...
+        </Button>,
+      );
+    } else {
       pageButtons.push(
         addPageButton({
-          page: totalPages,
-          activeClass: currentPage === totalPages,
+          page: totalPages - 1,
+          activeClass: currentPage === totalPages - 1,
         }),
       );
     }
+
+    // Last page
+    pageButtons.push(
+      addPageButton({
+        page: totalPages,
+        activeClass: currentPage === totalPages,
+      }),
+    );
 
     return pageButtons;
   };
