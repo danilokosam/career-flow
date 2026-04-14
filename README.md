@@ -150,6 +150,7 @@ DATABASE_URL=your_supabase_connection_string
 DIRECT_URL=your_supabase_direct_connection_string
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
+TEST_USER_CLERK_ID=your_clerk_user_id_for_seed
 ```
 
 ### Installation
@@ -170,6 +171,48 @@ npx prisma db seed
 # Start the development server
 npm run dev
 ```
+
+### Seeding: Development vs Production
+
+The seed script requires `TEST_USER_CLERK_ID` and behaves differently by environment:
+
+- **Development**: clears existing jobs first, then inserts 100 sample jobs.
+- **Production**: does **not** clear existing jobs, only inserts new sample jobs.
+
+This behavior is controlled by `NODE_ENV` inside `prisma/seed.ts`.
+
+#### Development seed
+
+```bash
+npx prisma db seed
+```
+
+#### Production seed (from your local machine)
+
+PowerShell:
+
+```powershell
+$env:DATABASE_URL="your_production_database_url"
+$env:TEST_USER_CLERK_ID="your_production_clerk_user_id"
+$env:NODE_ENV="production"
+npx prisma db seed
+Remove-Item Env:NODE_ENV
+```
+
+Bash:
+
+```bash
+DATABASE_URL="your_production_database_url" \
+TEST_USER_CLERK_ID="your_production_clerk_user_id" \
+NODE_ENV="production" \
+npx prisma db seed
+```
+
+Important notes:
+
+- Make sure production uses the production Clerk user ID.
+- Double-check `DATABASE_URL` before running seed.
+- Never commit real credentials to `.env` in version control.
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
