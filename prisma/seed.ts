@@ -18,10 +18,16 @@ const clerkId: string = TEST_USER_CLERK_ID;
 const jobStatuses = ["pending", "interview", "declined"] as const;
 const jobModes = ["full-time", "part-time", "internship"] as const;
 
+const isProduction = process.env.NODE_ENV === "production";
+
 async function main() {
-  console.log("Clearing the database...");
-  await prisma.job.deleteMany({});
-  console.log("Database cleared.");
+  if (isProduction) {
+    console.log("⚠️  Production mode: skipping deleteMany, only inserting new jobs.");
+  } else {
+    console.log("Clearing the database...");
+    await prisma.job.deleteMany({});
+    console.log("Database cleared.");
+  }
 
   console.log("Seeding 100 jobs...");
   const now = new Date();
