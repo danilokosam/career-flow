@@ -18,6 +18,7 @@
  */
 
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 /**
  * Define which routes require authentication
@@ -43,6 +44,8 @@ const isProtectedRoute = createRouteMatcher([
   "/user-profile(.*)",
 ]);
 
+const isAuthRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
+
 /**
  * Clerk Middleware Configuration
  *
@@ -58,6 +61,10 @@ const isProtectedRoute = createRouteMatcher([
  */
 
 export default clerkMiddleware(async (auth, req) => {
+   const { userId } = await auth();
+    if (userId && isAuthRoute(req)) {
+    return NextResponse.redirect(new URL("/jobs", req.url));
+  }
   // Only protect routes that are in the protected list
   // This allows public routes (like landing page) to be accessible
   if (isProtectedRoute(req)) {
